@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id    String  @id
+    email String  @unique
+    name  String?
+
+    likeThings     String?
+    dontLikeThings String?
+    shoeSize       String?
+    clothesSize    String?
+    giftList       String?
+
+    ownGroups         FriendsGroup[]
+    participantGroups UserFriendsGroup[]
+    drawnFriends      UserFriendsGroup[] @relation("drawnFriend")
+
+    @@map("users")
+}
+
+model FriendsGroup {
+    id          Int    @id @default(autoincrement())
+    title       String
+    description String
+
+    createdAt DateTime @default(now()) @map(name: "created_at")
+    updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+    drawDate      DateTime? @map("draw_date")
+    partyDate     DateTime? @map("party_date")
+    partyLocation String?   @map("party_location")
+
+    averageGiftPrice Int @default(0) @map("average_gift_price")
+
+    isDrawn Boolean @default(false) @map("drawn")
+
+    groupOwner   User   @relation(fields: [groupOwnerId], references: [id])
+    groupOwnerId String @map("group_owner_id")
+
+    participants UserFriendsGroup[]
+
+    @@map("friends_groups")
+}
+
+model UserFriendsGroup {
+    id             Int          @id @default(autoincrement())
+    user           User         @relation(fields: [userId], references: [id])
+    userId         String       @map("user_id")
+    friendsGroup   FriendsGroup @relation(fields: [friendsGroupId], references: [id])
+    friendsGroupId Int          @map("friends_group_id")
+
+    drawnFriend   User?   @relation(name: "drawnFriend", fields: [drawnFriendId], references: [id])
+    drawnFriendId String?
+
+    @@map("user_friends_group")
+}
