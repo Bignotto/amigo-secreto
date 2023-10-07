@@ -11,9 +11,10 @@ datasource db {
 }
 
 model User {
-    id    String  @id
-    email String  @unique
-    name  String?
+    id       String  @id
+    email    String  @unique
+    name     String?
+    imageUrl String? @map("image_url")
 
     likeThings     String?
     dontLikeThings String?
@@ -29,20 +30,21 @@ model User {
 }
 
 model FriendsGroup {
-    id          Int    @id @default(autoincrement())
+    id          Int     @id @default(autoincrement())
     title       String
-    description String
+    description String?
 
     createdAt DateTime @default(now()) @map(name: "created_at")
-    updatedAt DateTime @updatedAt @map(name: "updated_at")
+    updatedAt DateTime @default(now()) @updatedAt @map(name: "updated_at")
 
     drawDate      DateTime? @map("draw_date")
     partyDate     DateTime? @map("party_date")
+    partyTime     String?   @map("party_time")
     partyLocation String?   @map("party_location")
 
-    averageGiftPrice Int @default(0) @map("average_gift_price")
-
-    isDrawn Boolean @default(false) @map("drawn")
+    averageGiftPrice Int     @default(0) @map("average_gift_price")
+    isDrawn          Boolean @default(false) @map("drawn")
+    groupPassword    String  @map("group_password")
 
     groupOwner   User   @relation(fields: [groupOwnerId], references: [id])
     groupOwnerId String @map("group_owner_id")
