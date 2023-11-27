@@ -2,6 +2,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
 import { theme } from "../styles/theme";
 
+import { ClerkProvider } from "@clerk/nextjs";
 import { Pacifico, Roboto } from "next/font/google";
 
 const textFont = Roboto({ subsets: ["latin"], weight: "400" });
@@ -22,9 +23,11 @@ export default function App({ Component, pageProps }: AppProps) {
                     }
                 `}
             </style>
-            <ChakraProvider theme={theme}>
-                <Component {...pageProps} />
-            </ChakraProvider>
+            <ClerkProvider {...pageProps}>
+                <ChakraProvider theme={theme}>
+                    <Component {...pageProps} />
+                </ChakraProvider>
+            </ClerkProvider>
         </>
     );
 }
